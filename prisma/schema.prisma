@@ -5,21 +5,46 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "prisma-client-js"
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  password     String
+  name         String?
+  role         String   @default("admin") // "admin", "viewer"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // For password reset
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  
+  // For email verification
+  emailVerified     Boolean @default(false)
+  verificationToken String?
+  
+  @@map("users")
 }
 
 model Telemetry {
-  id           Int      @id @default(autoincrement())
-  speed        Int
-  temperature  Float
-  pressure     Float
-  vibration    Float
-  load         Int
-  createdAt    DateTime @default(now())
+  id          String   @id @default(cuid())
+  heartRate   Int
+  systolic    Int
+  diastolic   Int
+  cardiacOutput Float
+  oxygenSaturation Int
+  respiratoryRate Int
+  temperature Float
+  heartState  Int
+  createdAt   DateTime @default(now())
+  
+  @@map("telemetry")
 }

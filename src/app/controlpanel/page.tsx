@@ -1,5 +1,5 @@
 "use client";
-import ControlPanel from "../../components/ControlPanel";
+import ControlPanel from "../../components/HeartControlPanel";
 
 export default function ControlPanelPage() {
   return (

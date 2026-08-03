@@ -1,26 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function LoginPage() {
+export default function SignupPage() {
     const router = useRouter();
-    const searchParams = useSearchParams();
     const [formData, setFormData] = useState({
+        name: '',
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
     });
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        // Check if user just registered
-        if (searchParams.get('registered') === 'true') {
-            setSuccess('Account created successfully! Please sign in.');
-        }
-    }, [searchParams]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -33,22 +26,29 @@ export default function LoginPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
-        setSuccess('');
 
-        if (!formData.email || !formData.password) {
-            setError('Please fill in all fields');
+        // Validate passwords match
+        if (formData.password !== formData.confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
+        // Validate password length
+        if (formData.password.length < 6) {
+            setError('Password must be at least 6 characters');
             return;
         }
 
         setLoading(true);
 
         try {
-            const response = await fetch('/api/auth/login', {
+            const response = await fetch('/api/auth/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    name: formData.name,
                     email: formData.email,
                     password: formData.password
                 })
@@ -57,14 +57,14 @@ export default function LoginPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || 'Login failed');
+                throw new Error(data.error || 'Signup failed');
             }
 
-            // Redirect to home page on success
-            router.push('/admin/dashboard');
+            // Redirect to home/login page on success
+            router.push('/?registered=true');
 
         } catch (err: any) {
-            setError(err.message || 'An error occurred during login');
+            setError(err.message || 'An error occurred during signup');
         } finally {
             setLoading(false);
         }
@@ -90,19 +90,28 @@ export default function LoginPage() {
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                         </svg>
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-                    <p className="text-gray-400">Sign in to your Heart Digital Twin account</p>
+                    <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
+                    <p className="text-gray-400">Join our Heart Digital Twin platform</p>
                 </div>
 
                 {/* Form Card */}
                 <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20">
                     <form onSubmit={handleSubmit} className="space-y-5">
-                        {/* Success Message */}
-                        {success && (
-                            <div className="p-3 bg-green-500/20 border border-green-500/30 rounded-xl">
-                                <p className="text-green-400 text-sm text-center">{success}</p>
-                            </div>
-                        )}
+                        {/* Name Field */}
+                        <div>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+                                Full Name
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all duration-300"
+                                placeholder="Enter your full name"
+                            />
+                        </div>
 
                         {/* Email Field */}
                         <div>
@@ -134,7 +143,24 @@ export default function LoginPage() {
                                 onChange={handleChange}
                                 required
                                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all duration-300"
-                                placeholder="Enter your password"
+                                placeholder="Create a password"
+                            />
+                        </div>
+
+                        {/* Confirm Password Field */}
+                        <div>
+                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
+                                Confirm Password
+                            </label>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                required
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all duration-300"
+                                placeholder="Confirm your password"
                             />
                         </div>
 
@@ -157,20 +183,20 @@ export default function LoginPage() {
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
-                                    Signing In...
+                                    Creating Account...
                                 </span>
                             ) : (
-                                'Sign In'
+                                'Create Account'
                             )}
                         </button>
                     </form>
 
-                    {/* Signup Link */}
+                    {/* Login Link */}
                     <div className="mt-6 text-center">
                         <p className="text-gray-400">
-                            Don&apos;t have an account?{' '}
-                            <Link href="/signup" className="text-red-400 hover:text-red-300 font-medium transition-colors">
-                                Create one
+                            Already have an account?{' '}
+                            <Link href="/login" className="text-red-400 hover:text-red-300 font-medium transition-colors">
+                                Sign in
                             </Link>
                         </p>
                     </div>

@@ -1,489 +1,9 @@
-// // // "use client";
-// // // import { create } from "zustand";
-
-// // // interface MotorState {
-// // //   rpm: number;
-// // //   temperature: number;
-// // //   current: number;
-// // //   vibration: number;
-// // //   running: boolean;
-// // //   setRpm: (rpm: number) => void;
-// // //   setTemperature: (temp: number | ((prev: number) => number)) => void;
-// // //   toggleRunning: () => void;
-// // // }
-
-// // // export const useMotorStore = create<MotorState>((set) => ({
-// // //   rpm: 1200,
-// // //   temperature: 35,
-// // //   current: 2.3,
-// // //   vibration: 0.8,
-// // //   running: true,
-// // //   setRpm: (rpm) => set({ rpm }),
-// // //   setTemperature: (temp) =>
-// // //     set((state) => ({
-// // //       temperature: typeof temp === "function" ? temp(state.temperature) : temp,
-// // //     })),
-// // //   toggleRunning: () => set((state) => ({ running: !state.running })),
-// // // }));
-
-
-// // // app/store/useMotorStore.ts
-// // import { create } from 'zustand';
-// // import { persist } from 'zustand/middleware';
-
-// // interface MotorData {
-// //   speed: number;
-// //   temperature: number;
-// //   pressure: number;
-// //   vibration: number;
-// //   load: number;
-// // }
-
-// // interface MotorStore {
-// //   isMotorRunning: boolean;
-// //   telemetry: MotorData;
-// //   apiEndpoint: string;
-// //   setIsMotorRunning: (running: boolean) => void;
-// //   setTelemetry: (data: MotorData) => void;
-// //   setApiEndpoint: (endpoint: string) => void;
-// //   fetchMotorData: () => Promise<void>;
-// // }
-
-// // export const useMotorStore = create<MotorStore>()(
-// //   persist(
-// //     (set, get) => ({
-// //       isMotorRunning: false,
-// //       telemetry: {
-// //         speed: 0,
-// //         temperature: 28,
-// //         pressure: 1.0,
-// //         vibration: 0.1,
-// //         load: 0,
-// //       },
-// //       apiEndpoint: "http://localhost:3001/api/motor-data",
-      
-// //       setIsMotorRunning: (running: boolean) => set({ isMotorRunning: running }),
-      
-// //       setTelemetry: (data: MotorData) => set({ telemetry: data }),
-      
-// //       setApiEndpoint: (endpoint: string) => set({ apiEndpoint: endpoint }),
-      
-// //       fetchMotorData: async () => {
-// //         const { apiEndpoint, isMotorRunning } = get();
-        
-// //         try {
-// //           const response = await fetch(apiEndpoint);
-// //           if (!response.ok) {
-// //             throw new Error(`HTTP error! status: ${response.status}`);
-// //           }
-// //           const data: MotorData = await response.json();
-          
-// //           // Validate data types and ranges
-// //           const validatedData: MotorData = {
-// //             speed: Math.max(0, Number(data.speed) || 0),
-// //             temperature: Math.max(0, Number(data.temperature) || 28),
-// //             pressure: Math.max(0, Number(data.pressure) || 1.0),
-// //             vibration: Math.max(0, Number(data.vibration) || 0.1),
-// //             load: Math.max(0, Math.min(100, Number(data.load) || 0)),
-// //           };
-          
-// //           set({ telemetry: validatedData });
-// //           console.log("✅ Motor data fetched:", validatedData);
-// //         } catch (error) {
-// //           console.error("❌ Error fetching motor data:", error);
-// //           // Fallback to simulated data if API fails
-// //           if (isMotorRunning) {
-// //             const simulatedData = {
-// //               speed: Math.floor(1000 + Math.random() * 2000),
-// //               temperature: +(28 + Math.random() * 20).toFixed(1),
-// //               pressure: +(1 + Math.random() * 2).toFixed(2),
-// //               vibration: +(Math.random() * 2).toFixed(2),
-// //               load: Math.floor(Math.random() * 100),
-// //             };
-// //             set({ telemetry: simulatedData });
-// //           }
-// //         }
-// //       },
-// //     }),
-// //     {
-// //       name: 'motor-storage', // name for the persisted data
-// //     }
-// //   )
-// // );
-
-
-// // // app/store/useMotorStore.ts
-// // import { create } from 'zustand';
-// // import { persist } from 'zustand/middleware';
-
-// // interface MotorData {
-// //   speed: number;
-// //   temperature: number;
-// //   pressure: number;
-// //   vibration: number;
-// //   load: number;
-// // }
-
-// // interface MotorStore {
-// //   isMotorRunning: boolean;
-// //   telemetry: MotorData;
-// //   apiEndpoint: string;
-// //   setIsMotorRunning: (running: boolean) => void;
-// //   setTelemetry: (data: MotorData) => void;
-// //   setApiEndpoint: (endpoint: string) => void;
-// //   fetchMotorData: () => Promise<void>;
-// // }
-
-// // export const useMotorStore = create<MotorStore>()(
-// //   persist(
-// //     (set, get) => ({
-// //       isMotorRunning: false,
-// //       telemetry: {
-// //         speed: 0,
-// //         temperature: 28,
-// //         pressure: 1.0,
-// //         vibration: 0.1,
-// //         load: 0,
-// //       },
-// //       apiEndpoint: "http://localhost:3001/api/motor-data",
-      
-// //       setIsMotorRunning: (running: boolean) => set({ isMotorRunning: running }),
-      
-// //       setTelemetry: (data: MotorData) => set({ telemetry: data }),
-      
-// //       setApiEndpoint: (endpoint: string) => set({ apiEndpoint: endpoint }),
-      
-// //       fetchMotorData: async () => {
-// //         const { apiEndpoint, isMotorRunning } = get();
-        
-// //         try {
-// //           const response = await fetch(apiEndpoint);
-// //           if (!response.ok) {
-// //             throw new Error(`HTTP error! status: ${response.status}`);
-// //           }
-// //           const data: MotorData = await response.json();
-          
-// //           // Validate data types and ranges
-// //           const validatedData: MotorData = {
-// //             speed: Math.max(0, Number(data.speed) || 0),
-// //             temperature: Math.max(0, Number(data.temperature) || 28),
-// //             pressure: Math.max(0, Number(data.pressure) || 1.0),
-// //             vibration: Math.max(0, Number(data.vibration) || 0.1),
-// //             load: Math.max(0, Math.min(100, Number(data.load) || 0)),
-// //           };
-          
-// //           set({ telemetry: validatedData });
-// //           console.log("✅ Motor data fetched:", validatedData);
-// //         } catch (error) {
-// //           console.error("❌ Error fetching motor data:", error);
-// //           // Fallback to simulated data if API fails
-// //           if (isMotorRunning) {
-// //             const simulatedData = {
-// //               speed: Math.floor(1000 + Math.random() * 2000),
-// //               temperature: +(28 + Math.random() * 20).toFixed(1),
-// //               pressure: +(1 + Math.random() * 2).toFixed(2),
-// //               vibration: +(Math.random() * 2).toFixed(2),
-// //               load: Math.floor(Math.random() * 100),
-// //             };
-// //             set({ telemetry: simulatedData });
-// //           }
-// //         }
-// //       },
-// //     }),
-// //     {
-// //       name: 'motor-storage',
-// //     }
-// //   )
-// // );
-
-
-
-
-
-
-
 
 // // app/store/useMotorStore.ts
 // import { create } from 'zustand';
 // import { persist } from 'zustand/middleware';
 
-// interface MotorData {
-//   speed: number;
-//   temperature: number;
-//   pressure: number;
-//   vibration: number;
-//   load: number;
-// }
-
-// interface MotorStore {
-//   isMotorRunning: boolean;
-//   telemetry: MotorData;
-//   apiEndpoint: string;
-//   setIsMotorRunning: (running: boolean) => void;
-//   setTelemetry: (data: MotorData) => void;
-//   setApiEndpoint: (endpoint: string) => void;
-//   fetchMotorData: () => Promise<void>;
-//   resetToDefaultValues: () => void;
-// }
-
-// // Default normal values when motor is stopped
-// const DEFAULT_VALUES: MotorData = {
-//   speed: 0,
-//   temperature: 28,
-//   pressure: 1.0,
-//   vibration: 0.1,
-//   load: 0,
-// };
-
-// export const useMotorStore = create<MotorStore>()(
-//   persist(
-//     (set, get) => ({
-//       isMotorRunning: false,
-//       telemetry: DEFAULT_VALUES,
-//       apiEndpoint: "http://localhost:3001/api/motor-data",
-      
-//       setIsMotorRunning: (running: boolean) => {
-//         if (!running) {
-//           // When stopping motor, reset to default values
-//           set({ 
-//             isMotorRunning: running,
-//             telemetry: DEFAULT_VALUES 
-//           });
-//         } else {
-//           set({ isMotorRunning: running });
-//         }
-//       },
-      
-//       setTelemetry: (data: MotorData) => set({ telemetry: data }),
-      
-//       setApiEndpoint: (endpoint: string) => set({ apiEndpoint: endpoint }),
-      
-//       fetchMotorData: async () => {
-//         const { apiEndpoint, isMotorRunning } = get();
-        
-//         // Only fetch data if motor is running
-//         if (!isMotorRunning) return;
-        
-//         try {
-//           const response = await fetch(apiEndpoint);
-//           if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//           }
-//           const data: MotorData = await response.json();
-          
-//           // Validate data types and ranges
-//           const validatedData: MotorData = {
-//             speed: Math.max(0, Number(data.speed) || 0),
-//             temperature: Math.max(0, Number(data.temperature) || 28),
-//             pressure: Math.max(0, Number(data.pressure) || 1.0),
-//             vibration: Math.max(0, Number(data.vibration) || 0.1),
-//             load: Math.max(0, Math.min(100, Number(data.load) || 0)),
-//           };
-          
-//           set({ telemetry: validatedData });
-//           console.log("✅ Motor data fetched:", validatedData);
-//         } catch (error) {
-//           console.error("❌ Error fetching motor data:", error);
-//           // Fallback to simulated data if API fails
-//           if (isMotorRunning) {
-//             const simulatedData = {
-//               speed: Math.floor(1000 + Math.random() * 2000),
-//               temperature: +(28 + Math.random() * 20).toFixed(1),
-//               pressure: +(1 + Math.random() * 2).toFixed(2),
-//               vibration: +(Math.random() * 2).toFixed(2),
-//               load: Math.floor(Math.random() * 100),
-//             };
-//             set({ telemetry: simulatedData });
-//           }
-//         }
-//       },
-      
-//       resetToDefaultValues: () => set({ telemetry: DEFAULT_VALUES }),
-//     }),
-//     {
-//       name: 'motor-storage',
-//     }
-//   )
-// );
-
-
-
-
-
-// app/store/useMotorStore.ts
-// import { create } from 'zustand';
-// import { persist } from 'zustand/middleware';
-
-// interface MotorData {
-//   speed: number;
-//   temperature: number;
-//   pressure: number;
-//   vibration: number;
-//   load: number;
-// }
-
-// interface MotorHistory {
-//   id: string;
-//   action: 'start' | 'stop';
-//   timestamp: number;
-//   duration?: number; // For stop events, duration in seconds
-//   telemetry?: MotorData; // Snapshot at the time of action
-// }
-
-// interface MotorStore {
-//   isMotorRunning: boolean;
-//   telemetry: MotorData;
-//   apiEndpoint: string;
-//   motorHistory: MotorHistory[];
-//   lastStartTime: number | null;
-//   setIsMotorRunning: (running: boolean) => void;
-//   setTelemetry: (data: MotorData) => void;
-//   setApiEndpoint: (endpoint: string) => void;
-//   fetchMotorData: () => Promise<void>;
-//   resetToDefaultValues: () => void;
-//   addToHistory: (action: 'start' | 'stop') => void;
-//   clearHistory: () => void;
-// }
-
-// // Default normal values when motor is stopped
-// const DEFAULT_VALUES: MotorData = {
-//   speed: 0,
-//   temperature: 28,
-//   pressure: 1.0,
-//   vibration: 0.1,
-//   load: 0,
-// };
-
-// export const useMotorStore = create<MotorStore>()(
-//   persist(
-//     (set, get) => ({
-//       isMotorRunning: false,
-//       telemetry: DEFAULT_VALUES,
-//       apiEndpoint: "http://localhost:3001/api/motor-data",
-//       motorHistory: [],
-//       lastStartTime: null,
-      
-//       setIsMotorRunning: (running: boolean) => {
-//         const state = get();
-        
-//         if (running && !state.isMotorRunning) {
-//           // Starting the motor
-//           const newHistory: MotorHistory = {
-//             id: Math.random().toString(36).substr(2, 9),
-//             action: 'start',
-//             timestamp: Date.now(),
-//             telemetry: state.telemetry,
-//           };
-          
-//           set({ 
-//             isMotorRunning: running,
-//             lastStartTime: Date.now(),
-//             motorHistory: [...state.motorHistory, newHistory]
-//           });
-          
-//         } else if (!running && state.isMotorRunning) {
-//           // Stopping the motor
-//           const duration = state.lastStartTime ? Math.round((Date.now() - state.lastStartTime) / 1000) : 0;
-          
-//           const newHistory: MotorHistory = {
-//             id: Math.random().toString(36).substr(2, 9),
-//             action: 'stop',
-//             timestamp: Date.now(),
-//             duration: duration,
-//             telemetry: state.telemetry,
-//           };
-          
-//           set({ 
-//             isMotorRunning: running,
-//             telemetry: DEFAULT_VALUES,
-//             lastStartTime: null,
-//             motorHistory: [...state.motorHistory, newHistory]
-//           });
-//         }
-//       },
-      
-//       setTelemetry: (data: MotorData) => set({ telemetry: data }),
-      
-//       setApiEndpoint: (endpoint: string) => set({ apiEndpoint: endpoint }),
-      
-//       fetchMotorData: async () => {
-//         const { apiEndpoint, isMotorRunning } = get();
-        
-//         // Only fetch data if motor is running
-//         if (!isMotorRunning) return;
-        
-//         try {
-//           const response = await fetch(apiEndpoint);
-//           if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//           }
-//           const data: MotorData = await response.json();
-          
-//           // Validate data types and ranges
-//           const validatedData: MotorData = {
-//             speed: Math.max(0, Number(data.speed) || 0),
-//             temperature: Math.max(0, Number(data.temperature) || 28),
-//             pressure: Math.max(0, Number(data.pressure) || 1.0),
-//             vibration: Math.max(0, Number(data.vibration) || 0.1),
-//             load: Math.max(0, Math.min(100, Number(data.load) || 0)),
-//           };
-          
-//           set({ telemetry: validatedData });
-//           console.log("✅ Motor data fetched:", validatedData);
-//         } catch (error) {
-//           console.error("❌ Error fetching motor data:", error);
-//           // Fallback to simulated data if API fails
-//           if (isMotorRunning) {
-//             const simulatedData = {
-//               speed: Math.floor(1000 + Math.random() * 2000),
-//               temperature: +(28 + Math.random() * 20).toFixed(1),
-//               pressure: +(1 + Math.random() * 2).toFixed(2),
-//               vibration: +(Math.random() * 2).toFixed(2),
-//               load: Math.floor(Math.random() * 100),
-//             };
-//             set({ telemetry: simulatedData });
-//           }
-//         }
-//       },
-      
-//       resetToDefaultValues: () => set({ telemetry: DEFAULT_VALUES }),
-      
-//       addToHistory: (action: 'start' | 'stop') => {
-//         const state = get();
-//         const newHistory: MotorHistory = {
-//           id: Math.random().toString(36).substr(2, 9),
-//           action: action,
-//           timestamp: Date.now(),
-//           telemetry: state.telemetry,
-//         };
-        
-//         if (action === 'stop' && state.lastStartTime) {
-//           newHistory.duration = Math.round((Date.now() - state.lastStartTime) / 1000);
-//         }
-        
-//         set({ 
-//           motorHistory: [...state.motorHistory, newHistory],
-//           ...(action === 'start' ? { lastStartTime: Date.now() } : { lastStartTime: null })
-//         });
-//       },
-      
-//       clearHistory: () => set({ motorHistory: [] }),
-//     }),
-//     {
-//       name: 'motor-storage',
-//     }
-//   )
-// );
-
-
-
-
-
-
-// import { create } from 'zustand';
-// import { persist } from 'zustand/middleware';
-
-// interface MotorData {
+// interface Telemetry {
 //   speed: number;
 //   temperature: number;
 //   pressure: number;
@@ -492,322 +12,233 @@
 // }
 
 // interface SensorFault {
+//   level: string;
 //   sensor: string;
 //   message: string;
-//   level: "warning" | "error";
 // }
 
-// interface MotorHistory {
+// interface MotorHistoryRecord {
 //   id: string;
-//   action: 'start' | 'stop';
 //   timestamp: number;
-//   duration?: number; // For stop events, duration in seconds
-//   telemetry?: MotorData; // Snapshot at the time of action
+//   action: 'start' | 'stop';
+//   duration?: number;
+//   telemetry?: Telemetry;
 // }
 
-// interface MotorStore {
+// interface MotorState {
+//   // Motor state
 //   isMotorRunning: boolean;
-//   telemetry: MotorData;
+//   telemetry: Telemetry;
 //   sensorFaults: SensorFault[];
-//   apiEndpoint: string;
-//   motorHistory: MotorHistory[];
-//   lastStartTime: number | null;
+//   motorHistory: MotorHistoryRecord[];
+  
+//   // Actions
 //   setIsMotorRunning: (running: boolean) => void;
-//   setTelemetry: (data: MotorData) => void;
-//   setApiEndpoint: (endpoint: string) => void;
-//   fetchMotorData: () => Promise<void>;
-//   resetToDefaultValues: () => void;
-//   addToHistory: (action: 'start' | 'stop') => void;
-//   clearHistory: () => void;
-//   checkSensorFaults: (data: MotorData) => void;
+//   updateTelemetry: (newTelemetry: Partial<Telemetry>) => void;
+//   setSensorFaults: (faults: SensorFault[]) => void;
 //   clearSensorFaults: () => void;
-//   addSensorFault: (fault: SensorFault) => void;
+//   addMotorHistory: (record: Omit<MotorHistoryRecord, 'id'>) => void;
+//   clearHistory: () => void;
+//   fetchMotorData: () => Promise<void>;
 // }
 
-// // Default normal values when motor is stopped
-// const DEFAULT_VALUES: MotorData = {
-//   speed: 0,
-//   temperature: 28,
-//   pressure: 1.0,
-//   vibration: 0.1,
-//   load: 0,
-// };
-
-// export const useMotorStore = create<MotorStore>()(
+// export const useMotorStore = create<MotorState>()(
 //   persist(
 //     (set, get) => ({
+//       // Initial state
 //       isMotorRunning: false,
-//       telemetry: DEFAULT_VALUES,
+//       telemetry: {
+//         speed: 1500,
+//         temperature: 35.5,
+//         pressure: 1.8,
+//         vibration: 0.5,
+//         load: 75
+//       },
 //       sensorFaults: [],
-//       // apiEndpoint: "http://localhost:3001/api/motor-data",
-//       // In your useMotorStore.ts
-// apiEndpoint: "http://192.168.29.131:3001/api/motor-data",
 //       motorHistory: [],
-//       lastStartTime: null,
-      
+
+//       // Actions
 //       setIsMotorRunning: (running: boolean) => {
 //         const state = get();
+//         const timestamp = Date.now();
         
 //         if (running && !state.isMotorRunning) {
-//           // Starting the motor
-//           const newHistory: MotorHistory = {
-//             id: Math.random().toString(36).substr(2, 9),
+//           // Motor starting
+//           state.addMotorHistory({
+//             timestamp,
 //             action: 'start',
-//             timestamp: Date.now(),
-//             telemetry: state.telemetry,
-//           };
-          
-//           set({ 
-//             isMotorRunning: running,
-//             lastStartTime: Date.now(),
-//             motorHistory: [...state.motorHistory, newHistory],
-//             sensorFaults: [] // Clear faults when starting
+//             telemetry: { ...state.telemetry }
 //           });
-          
 //         } else if (!running && state.isMotorRunning) {
-//           // Stopping the motor
-//           const duration = state.lastStartTime ? Math.round((Date.now() - state.lastStartTime) / 1000) : 0;
+//           // Motor stopping - calculate duration for the last start record
+//           const lastStart = state.motorHistory
+//             .slice()
+//             .reverse()
+//             .find(record => record.action === 'start');
           
-//           const newHistory: MotorHistory = {
-//             id: Math.random().toString(36).substr(2, 9),
-//             action: 'stop',
-//             timestamp: Date.now(),
-//             duration: duration,
-//             telemetry: state.telemetry,
-//           };
-          
-//           set({ 
-//             isMotorRunning: running,
-//             telemetry: DEFAULT_VALUES,
-//             lastStartTime: null,
-//             motorHistory: [...state.motorHistory, newHistory],
-//             sensorFaults: [] // Clear faults when stopping
-//           });
-//         }
-//       },
-      
-//       setTelemetry: (data: MotorData) => {
-//         set({ telemetry: data });
-//         get().checkSensorFaults(data);
-//       },
-      
-//       setApiEndpoint: (endpoint: string) => set({ apiEndpoint: endpoint }),
-      
-//       fetchMotorData: async () => {
-//         const { apiEndpoint, isMotorRunning, checkSensorFaults } = get();
-        
-//         // Only fetch data if motor is running
-//         if (!isMotorRunning) return;
-        
-//         try {
-//           const response = await fetch(apiEndpoint);
-//           if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//           }
-//           const data: MotorData = await response.json();
-          
-//           // Validate data types and ranges
-//           const validatedData: MotorData = {
-//             speed: Math.max(0, Number(data.speed) || 0),
-//             temperature: Math.max(0, Number(data.temperature) || 28),
-//             pressure: Math.max(0, Number(data.pressure) || 1.0),
-//             vibration: Math.max(0, Number(data.vibration) || 0.1),
-//             load: Math.max(0, Math.min(100, Number(data.load) || 0)),
-//           };
-          
-//           set({ telemetry: validatedData });
-//           checkSensorFaults(validatedData);
-//           console.log("✅ Motor data fetched:", validatedData);
-//         } catch (error) {
-//           console.error("❌ Error fetching motor data:", error);
-          
-//           // Add connection fault
-//           set({ 
-//             sensorFaults: [{ 
-//               sensor: "connection", 
-//               message: "Cannot connect to motor API server", 
-//               level: "error" 
-//             }]
-//           });
-          
-//           // Fallback to simulated data if API fails
-//           if (isMotorRunning) {
-//             const simulatedData = {
-//               speed: Math.floor(1000 + Math.random() * 2000),
-//               temperature: +(28 + Math.random() * 20).toFixed(1),
-//               pressure: +(1 + Math.random() * 2).toFixed(2),
-//               vibration: +(Math.random() * 2).toFixed(2),
-//               load: Math.floor(Math.random() * 100),
-//             };
-//             set({ telemetry: simulatedData });
-//             checkSensorFaults(simulatedData);
+//           if (lastStart) {
+//             const duration = timestamp - lastStart.timestamp;
+//             state.addMotorHistory({
+//               timestamp,
+//               action: 'stop',
+//               duration: Math.floor(duration / 1000), // Convert to seconds
+//               telemetry: { ...state.telemetry }
+//             });
 //           }
 //         }
+        
+//         set({ isMotorRunning: running });
 //       },
-      
-//       resetToDefaultValues: () => set({ 
-//         telemetry: DEFAULT_VALUES,
-//         sensorFaults: [] 
-//       }),
-      
-//       addToHistory: (action: 'start' | 'stop') => {
+
+//       updateTelemetry: (newTelemetry) => {
+//         set((state) => ({
+//           telemetry: {
+//             ...state.telemetry,
+//             ...newTelemetry
+//           }
+//         }));
+
+//         // Auto-detect faults based on new telemetry values
 //         const state = get();
-//         const newHistory: MotorHistory = {
-//           id: Math.random().toString(36).substr(2, 9),
-//           action: action,
-//           timestamp: Date.now(),
-//           telemetry: state.telemetry,
-//         };
-        
-//         if (action === 'stop' && state.lastStartTime) {
-//           newHistory.duration = Math.round((Date.now() - state.lastStartTime) / 1000);
-//         }
-        
-//         set({ 
-//           motorHistory: [...state.motorHistory, newHistory],
-//           ...(action === 'start' ? { lastStartTime: Date.now() } : { lastStartTime: null })
-//         });
-//       },
-      
-//       clearHistory: () => set({ motorHistory: [] }),
-      
-//       checkSensorFaults: (data: MotorData) => {
 //         const faults: SensorFault[] = [];
-
-//         // Check for missing or undefined values
-//         if (data.speed === undefined || data.speed === null) {
-//           faults.push({ 
-//             sensor: "speed", 
-//             message: "Speed sensor not responding - no data received", 
-//             level: "error" 
+        
+//         // Speed faults
+//         if (state.telemetry.speed > 4000) {
+//           faults.push({
+//             level: "error",
+//             sensor: "speed",
+//             message: `Speed critically high: ${state.telemetry.speed} RPM`
 //           });
-//         } else if (data.speed < 0) {
-//           faults.push({ 
-//             sensor: "speed", 
-//             message: "Invalid speed value detected (negative value)", 
-//             level: "warning" 
-//           });
-//         } else if (data.speed > 5000) {
-//           faults.push({ 
-//             sensor: "speed", 
-//             message: "Critical overspeed detected", 
-//             level: "error" 
+//         } else if (state.telemetry.speed > 3000) {
+//           faults.push({
+//             level: "warning",
+//             sensor: "speed",
+//             message: `Speed high: ${state.telemetry.speed} RPM`
 //           });
 //         }
-
-//         if (data.temperature === undefined || data.temperature === null) {
-//           faults.push({ 
-//             sensor: "temperature", 
-//             message: "Temperature sensor not responding - no data received", 
-//             level: "error" 
+        
+//         // Temperature faults
+//         if (state.telemetry.temperature > 80) {
+//           faults.push({
+//             level: "error",
+//             sensor: "temperature",
+//             message: `Temperature critically high: ${state.telemetry.temperature}°C`
 //           });
-//         } else if (data.temperature > 80) {
-//           faults.push({ 
-//             sensor: "temperature", 
-//             message: "High temperature warning - motor may overheat", 
-//             level: "warning" 
-//           });
-//         } else if (data.temperature > 100) {
-//           faults.push({ 
-//             sensor: "temperature", 
-//             message: "Critical temperature! Immediate shutdown required", 
-//             level: "error" 
-//           });
-//         } else if (data.temperature < 20) {
-//           faults.push({ 
-//             sensor: "temperature", 
-//             message: "Low temperature detected - possible sensor fault", 
-//             level: "warning" 
+//         } else if (state.telemetry.temperature > 60) {
+//           faults.push({
+//             level: "warning",
+//             sensor: "temperature",
+//             message: `Temperature high: ${state.telemetry.temperature}°C`
 //           });
 //         }
-
-//         if (data.pressure === undefined || data.pressure === null) {
-//           faults.push({ 
-//             sensor: "pressure", 
-//             message: "Pressure sensor not responding - no data received", 
-//             level: "error" 
+        
+//         // Vibration faults
+//         if (state.telemetry.vibration > 8) {
+//           faults.push({
+//             level: "error",
+//             sensor: "vibration",
+//             message: `Vibration critically high: ${state.telemetry.vibration} mm/s`
 //           });
-//         } else if (data.pressure > 3.0) {
-//           faults.push({ 
-//             sensor: "pressure", 
-//             message: "High pressure detected - check cooling system", 
-//             level: "warning" 
-//           });
-//         } else if (data.pressure < 0.5) {
-//           faults.push({ 
-//             sensor: "pressure", 
-//             message: "Low pressure detected - possible leak", 
-//             level: "warning" 
+//         } else if (state.telemetry.vibration > 5) {
+//           faults.push({
+//             level: "warning",
+//             sensor: "vibration",
+//             message: `Vibration high: ${state.telemetry.vibration} mm/s`
 //           });
 //         }
-
-//         if (data.vibration === undefined || data.vibration === null) {
-//           faults.push({ 
-//             sensor: "vibration", 
-//             message: "Vibration sensor not responding - no data received", 
-//             level: "error" 
+        
+//         // Load faults
+//         if (state.telemetry.load > 95) {
+//           faults.push({
+//             level: "error",
+//             sensor: "load",
+//             message: `Load critically high: ${state.telemetry.load}%`
 //           });
-//         } else if (data.vibration > 2.0) {
-//           faults.push({ 
-//             sensor: "vibration", 
-//             message: "High vibration levels - check motor balance", 
-//             level: "warning" 
-//           });
-//         } else if (data.vibration > 3.0) {
-//           faults.push({ 
-//             sensor: "vibration", 
-//             message: "Critical vibration levels - risk of damage", 
-//             level: "error" 
+//         } else if (state.telemetry.load > 85) {
+//           faults.push({
+//             level: "warning",
+//             sensor: "load",
+//             message: `Load high: ${state.telemetry.load}%`
 //           });
 //         }
-
-//         if (data.load === undefined || data.load === null) {
-//           faults.push({ 
-//             sensor: "load", 
-//             message: "Load sensor not responding - no data received", 
-//             level: "error" 
+        
+//         // Pressure faults
+//         if (state.telemetry.pressure > 3.5) {
+//           faults.push({
+//             level: "error",
+//             sensor: "pressure",
+//             message: `Pressure critically high: ${state.telemetry.pressure} bar`
 //           });
-//         } else if (data.load > 90) {
-//           faults.push({ 
-//             sensor: "load", 
-//             message: "Motor overload warning - reduce load", 
-//             level: "warning" 
-//           });
-//         } else if (data.load > 100) {
-//           faults.push({ 
-//             sensor: "load", 
-//             message: "Critical overload - immediate action required", 
-//             level: "error" 
+//         } else if (state.telemetry.pressure > 2.5) {
+//           faults.push({
+//             level: "warning",
+//             sensor: "pressure",
+//             message: `Pressure high: ${state.telemetry.pressure} bar`
 //           });
 //         }
 
 //         set({ sensorFaults: faults });
-        
-//         if (faults.length > 0) {
-//           console.warn("🚨 Sensor faults detected:", faults);
-//         }
 //       },
-      
-//       clearSensorFaults: () => set({ sensorFaults: [] }),
-      
-//       addSensorFault: (fault: SensorFault) => {
-//         const state = get();
-//         // Avoid duplicate faults for the same sensor
-//         const existingFaultIndex = state.sensorFaults.findIndex(f => f.sensor === fault.sensor);
-        
-//         if (existingFaultIndex >= 0) {
-//           // Update existing fault
-//           const updatedFaults = [...state.sensorFaults];
-//           updatedFaults[existingFaultIndex] = fault;
-//           set({ sensorFaults: updatedFaults });
-//         } else {
-//           // Add new fault
-//           set({ sensorFaults: [...state.sensorFaults, fault] });
-//         }
+
+//       setSensorFaults: (faults) => {
+//         set({ sensorFaults: faults });
 //       },
+
+//       clearSensorFaults: () => {
+//         set({ sensorFaults: [] });
+//       },
+
+//       addMotorHistory: (record) => {
+//         const newRecord = {
+//           ...record,
+//           id: Math.random().toString(36).substr(2, 9)
+//         };
+        
+//         set((state) => ({
+//           motorHistory: [...state.motorHistory, newRecord]
+//         }));
+//       },
+
+//       clearHistory: () => {
+//         set({ motorHistory: [] });
+//       },
+
+//       fetchMotorData: async () => {
+//         try {
+//           const response = await fetch('http://192.168.29.146:3001/api/motor-data');
+//           const data = await response.json();
+          
+//           if (data && typeof data === 'object') {
+//             get().updateTelemetry({
+//               speed: data.speed || 1500,
+//               temperature: data.temperature || 35.5,
+//               pressure: data.pressure || 1.8,
+//               vibration: data.vibration || 0.5,
+//               load: data.load || 75
+//             });
+//           }
+//         } catch (error) {
+//           console.error('Failed to fetch motor data:', error);
+//           // Add connection fault
+//           set((state) => ({
+//             sensorFaults: [
+//               ...state.sensorFaults,
+//               {
+//                 level: "error",
+//                 sensor: "connection",
+//                 message: "Cannot connect to motor API server"
+//               }
+//             ]
+//           }));
+//         }
+//       }
 //     }),
 //     {
 //       name: 'motor-storage',
+//       partialize: (state) => ({ 
+//         motorHistory: state.motorHistory,
+//         telemetry: state.telemetry 
+//       })
 //     }
 //   )
 // );
@@ -816,121 +247,72 @@
 
 
 
-
-
-
-// // import { create } from "zustand";
-
-// // interface MotorState {
-// //   motorHistory: string[];
-// //   addHistory: (entry: string) => void;
-// //   clearHistory: () => void;
-// // }
-
-// // export const useMotorStore = create<MotorState>((set) => ({
-// //   motorHistory: [],
-// //   addHistory: (entry) =>
-// //     set((state) => ({ motorHistory: [...state.motorHistory, entry] })),
-// //   clearHistory: () => set({ motorHistory: [] }),
-// // }));
-
-
-
-
-
-
-
-
-
-// app/store/useMotorStore.ts
+// app/store/useHeartStore.ts
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-interface Telemetry {
-  speed: number;
+interface HeartTelemetry {
+  heartRate: number;
   temperature: number;
-  pressure: number;
-  vibration: number;
-  load: number;
+  systolic: number;
+  diastolic: number;
+  cardiacOutput: number;
+  oxygenSaturation: number;
+  respiratoryRate: number;
+  ecg: number | null;
 }
 
-interface SensorFault {
+interface HeartFault {
   level: string;
-  sensor: string;
+  parameter: string;
   message: string;
 }
 
-interface MotorHistoryRecord {
+interface HeartHistoryRecord {
   id: string;
   timestamp: number;
-  action: 'start' | 'stop';
-  duration?: number;
-  telemetry?: Telemetry;
+  event: 'normal' | 'warning' | 'critical';
+  telemetry?: HeartTelemetry;
 }
 
-interface MotorState {
-  // Motor state
-  isMotorRunning: boolean;
-  telemetry: Telemetry;
-  sensorFaults: SensorFault[];
-  motorHistory: MotorHistoryRecord[];
+interface HeartState {
+  // Heart state
+  isMonitoringActive: boolean;
+  telemetry: HeartTelemetry;
+  faults: HeartFault[];
+  history: HeartHistoryRecord[];
   
   // Actions
-  setIsMotorRunning: (running: boolean) => void;
-  updateTelemetry: (newTelemetry: Partial<Telemetry>) => void;
-  setSensorFaults: (faults: SensorFault[]) => void;
-  clearSensorFaults: () => void;
-  addMotorHistory: (record: Omit<MotorHistoryRecord, 'id'>) => void;
+  setIsMonitoringActive: (active: boolean) => void;
+  updateTelemetry: (newTelemetry: Partial<HeartTelemetry>) => void;
+  setFaults: (faults: HeartFault[]) => void;
+  clearFaults: () => void;
+  addHistory: (record: Omit<HeartHistoryRecord, 'id'>) => void;
   clearHistory: () => void;
-  fetchMotorData: () => Promise<void>;
+  fetchHeartData: () => Promise<void>;
 }
 
-export const useMotorStore = create<MotorState>()(
+export const useHeartStore = create<HeartState>()(
   persist(
     (set, get) => ({
-      // Initial state
-      isMotorRunning: false,
+      // Initial state - Normal healthy heart
+      isMonitoringActive: true,
       telemetry: {
-        speed: 1500,
-        temperature: 35.5,
-        pressure: 1.8,
-        vibration: 0.5,
-        load: 75
+        heartRate: 75,
+        temperature: 98.2,
+        systolic: 120,
+        diastolic: 80,
+        cardiacOutput: 5.0,
+        oxygenSaturation: 98,
+        respiratoryRate: 16,
+        ecg: null
       },
-      sensorFaults: [],
-      motorHistory: [],
+      faults: [],
+      history: [],
 
       // Actions
-      setIsMotorRunning: (running: boolean) => {
-        const state = get();
-        const timestamp = Date.now();
-        
-        if (running && !state.isMotorRunning) {
-          // Motor starting
-          state.addMotorHistory({
-            timestamp,
-            action: 'start',
-            telemetry: { ...state.telemetry }
-          });
-        } else if (!running && state.isMotorRunning) {
-          // Motor stopping - calculate duration for the last start record
-          const lastStart = state.motorHistory
-            .slice()
-            .reverse()
-            .find(record => record.action === 'start');
-          
-          if (lastStart) {
-            const duration = timestamp - lastStart.timestamp;
-            state.addMotorHistory({
-              timestamp,
-              action: 'stop',
-              duration: Math.floor(duration / 1000), // Convert to seconds
-              telemetry: { ...state.telemetry }
-            });
-          }
-        }
-        
-        set({ isMotorRunning: running });
+      setIsMonitoringActive: (active: boolean) => {
+        set({ isMonitoringActive: active });
       },
 
       updateTelemetry: (newTelemetry) => {
@@ -941,135 +323,189 @@ export const useMotorStore = create<MotorState>()(
           }
         }));
 
-        // Auto-detect faults based on new telemetry values
+        // Auto-detect abnormalities based on new telemetry values
         const state = get();
-        const faults: SensorFault[] = [];
+        const faults: HeartFault[] = [];
         
-        // Speed faults
-        if (state.telemetry.speed > 4000) {
+        // Heart Rate abnormalities
+        if (state.telemetry.heartRate > 120) {
           faults.push({
-            level: "error",
-            sensor: "speed",
-            message: `Speed critically high: ${state.telemetry.speed} RPM`
+            level: "critical",
+            parameter: "heartRate",
+            message: `Tachycardia detected: ${state.telemetry.heartRate} BPM`
           });
-        } else if (state.telemetry.speed > 3000) {
+        } else if (state.telemetry.heartRate > 100) {
           faults.push({
             level: "warning",
-            sensor: "speed",
-            message: `Speed high: ${state.telemetry.speed} RPM`
+            parameter: "heartRate",
+            message: `Elevated heart rate: ${state.telemetry.heartRate} BPM`
+          });
+        } else if (state.telemetry.heartRate < 50) {
+          faults.push({
+            level: "critical",
+            parameter: "heartRate",
+            message: `Bradycardia detected: ${state.telemetry.heartRate} BPM`
+          });
+        } else if (state.telemetry.heartRate < 60) {
+          faults.push({
+            level: "warning",
+            parameter: "heartRate",
+            message: `Low heart rate: ${state.telemetry.heartRate} BPM`
           });
         }
         
-        // Temperature faults
-        if (state.telemetry.temperature > 80) {
+        // Blood Pressure abnormalities
+        if (state.telemetry.systolic > 180 || state.telemetry.diastolic > 120) {
           faults.push({
-            level: "error",
-            sensor: "temperature",
-            message: `Temperature critically high: ${state.telemetry.temperature}°C`
+            level: "critical",
+            parameter: "bloodPressure",
+            message: `Hypertensive crisis: ${state.telemetry.systolic}/${state.telemetry.diastolic} mmHg`
           });
-        } else if (state.telemetry.temperature > 60) {
+        } else if (state.telemetry.systolic > 140 || state.telemetry.diastolic > 90) {
           faults.push({
             level: "warning",
-            sensor: "temperature",
-            message: `Temperature high: ${state.telemetry.temperature}°C`
+            parameter: "bloodPressure",
+            message: `Hypertension: ${state.telemetry.systolic}/${state.telemetry.diastolic} mmHg`
+          });
+        } else if (state.telemetry.systolic < 90 || state.telemetry.diastolic < 60) {
+          faults.push({
+            level: "warning",
+            parameter: "bloodPressure",
+            message: `Hypotension: ${state.telemetry.systolic}/${state.telemetry.diastolic} mmHg`
           });
         }
         
-        // Vibration faults
-        if (state.telemetry.vibration > 8) {
+        // Oxygen saturation abnormalities
+        if (state.telemetry.oxygenSaturation < 90) {
           faults.push({
-            level: "error",
-            sensor: "vibration",
-            message: `Vibration critically high: ${state.telemetry.vibration} mm/s`
+            level: "critical",
+            parameter: "oxygen",
+            message: `Hypoxia detected: ${state.telemetry.oxygenSaturation}% SpO2`
           });
-        } else if (state.telemetry.vibration > 5) {
+        } else if (state.telemetry.oxygenSaturation < 95) {
           faults.push({
             level: "warning",
-            sensor: "vibration",
-            message: `Vibration high: ${state.telemetry.vibration} mm/s`
+            parameter: "oxygen",
+            message: `Low oxygen saturation: ${state.telemetry.oxygenSaturation}%`
           });
         }
         
-        // Load faults
-        if (state.telemetry.load > 95) {
+        // Temperature abnormalities
+        if (state.telemetry.temperature >= 103) {
           faults.push({
-            level: "error",
-            sensor: "load",
-            message: `Load critically high: ${state.telemetry.load}%`
+            level: "critical",
+            parameter: "temperature",
+            message: `Critical high temperature: ${state.telemetry.temperature}°F`
           });
-        } else if (state.telemetry.load > 85) {
+        } else if (state.telemetry.temperature >= 100.4) {
           faults.push({
             level: "warning",
-            sensor: "load",
-            message: `Load high: ${state.telemetry.load}%`
+            parameter: "temperature",
+            message: `Fever: ${state.telemetry.temperature}°F`
+          });
+        } else if (state.telemetry.temperature < 95) {
+          faults.push({
+            level: "critical",
+            parameter: "temperature",
+            message: `Critical low temperature: ${state.telemetry.temperature}°F`
+          });
+        } else if (state.telemetry.temperature < 97) {
+          faults.push({
+            level: "warning",
+            parameter: "temperature",
+            message: `Below normal temperature: ${state.telemetry.temperature}°F`
+          });
+        } else if (state.telemetry.temperature > 99) {
+          faults.push({
+            level: "warning",
+            parameter: "temperature",
+            message: `Above normal temperature: ${state.telemetry.temperature}°F`
           });
         }
         
-        // Pressure faults
-        if (state.telemetry.pressure > 3.5) {
-          faults.push({
-            level: "error",
-            sensor: "pressure",
-            message: `Pressure critically high: ${state.telemetry.pressure} bar`
-          });
-        } else if (state.telemetry.pressure > 2.5) {
+        // Cardiac output abnormalities
+        if (state.telemetry.cardiacOutput > 10) {
           faults.push({
             level: "warning",
-            sensor: "pressure",
-            message: `Pressure high: ${state.telemetry.pressure} bar`
+            parameter: "cardiacOutput",
+            message: `High cardiac output: ${state.telemetry.cardiacOutput} L/min`
+          });
+        } else if (state.telemetry.cardiacOutput < 3) {
+          faults.push({
+            level: "critical",
+            parameter: "cardiacOutput",
+            message: `Low cardiac output: ${state.telemetry.cardiacOutput} L/min`
+          });
+        }
+        
+        // Respiratory rate abnormalities
+        if (state.telemetry.respiratoryRate > 24) {
+          faults.push({
+            level: "warning",
+            parameter: "respiratory",
+            message: `Tachypnea: ${state.telemetry.respiratoryRate} breaths/min`
+          });
+        } else if (state.telemetry.respiratoryRate < 10) {
+          faults.push({
+            level: "critical",
+            parameter: "respiratory",
+            message: `Bradypnea: ${state.telemetry.respiratoryRate} breaths/min`
           });
         }
 
-        set({ sensorFaults: faults });
+        set({ faults: faults });
       },
 
-      setSensorFaults: (faults) => {
-        set({ sensorFaults: faults });
+      setFaults: (faults) => {
+        set({ faults: faults });
       },
 
-      clearSensorFaults: () => {
-        set({ sensorFaults: [] });
+      clearFaults: () => {
+        set({ faults: [] });
       },
 
-      addMotorHistory: (record) => {
+      addHistory: (record) => {
         const newRecord = {
           ...record,
           id: Math.random().toString(36).substr(2, 9)
         };
         
         set((state) => ({
-          motorHistory: [...state.motorHistory, newRecord]
+          history: [...state.history, newRecord]
         }));
       },
 
       clearHistory: () => {
-        set({ motorHistory: [] });
+        set({ history: [] });
       },
 
-      fetchMotorData: async () => {
+      fetchHeartData: async () => {
         try {
-          const response = await fetch('http://192.168.29.146:3001/api/motor-data');
+          const response = await fetch('http://localhost:3001/api/heart-data');
           const data = await response.json();
           
           if (data && typeof data === 'object') {
             get().updateTelemetry({
-              speed: data.speed || 1500,
-              temperature: data.temperature || 35.5,
-              pressure: data.pressure || 1.8,
-              vibration: data.vibration || 0.5,
-              load: data.load || 75
+              heartRate: data.heartRate || 75,
+              temperature: data.temperature || 98.2,
+              systolic: data.systolic || 120,
+              diastolic: data.diastolic || 80,
+              cardiacOutput: data.cardiacOutput || 5.0,
+              oxygenSaturation: data.oxygenSaturation || 98,
+              respiratoryRate: data.respiratoryRate || 16,
+              ecg: typeof data.ecg === 'number' ? data.ecg : null
             });
           }
         } catch (error) {
-          console.error('Failed to fetch motor data:', error);
+          console.error('Failed to fetch heart data:', error);
           // Add connection fault
           set((state) => ({
-            sensorFaults: [
-              ...state.sensorFaults,
+            faults: [
+              ...state.faults,
               {
-                level: "error",
-                sensor: "connection",
-                message: "Cannot connect to motor API server"
+                level: "warning",
+                parameter: "connection",
+                message: "Cannot connect to heart data server"
               }
             ]
           }));
@@ -1077,10 +513,9 @@ export const useMotorStore = create<MotorState>()(
       }
     }),
     {
-      name: 'motor-storage',
+      name: 'heart-storage-v2',
       partialize: (state) => ({ 
-        motorHistory: state.motorHistory,
-        telemetry: state.telemetry 
+        history: state.history
       })
     }
   )
